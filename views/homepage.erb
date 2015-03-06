@@ -3,9 +3,34 @@
 
 <hr>
 
-<p>Browse through the slideshow below.</p>
+  <p>Browse through the slideshow below.</p>
 
-
+  <p>
+    <h4>Edit Slide</h4>
+    <form id="editSlideForm" method="post" action="javascript:void(0)">
+      Slide ID:<input type="text" name="id">
+      Slide Order:<input type="text" name="slide_order">
+      Slide Title:<input type="text" name="title">
+      Slide Body:<input type="text" name="body">
+      <button onclick="editSlide()">Edit Slide</button>
+    </form>
+  </p>
+  <p>
+    <h4>Insert Slide</h4>
+    <form id="insertSlideForm" method="post" action="javascript:void(0)">
+      Slide Order:<input type="number" name="slide_order">
+      Slide Title:<input type="text" name="title">
+      Slide Body:<input type="text" name="body">
+      <button onclick="insertSlide()">Insert Slide</button>
+    </form>
+  </p>
+  <p>
+    <h4>Delete Slide</h4>
+    <form id="deleteSlideForm" method="post" action="javascript:void(0)">
+      Slide ID<input type="number" name="id">
+      <button onclick="deleteSlide()">Delete Slide</button>
+    </form>
+  </p>
 
 <div id="response">
 </div>

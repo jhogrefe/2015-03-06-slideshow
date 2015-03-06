@@ -10,10 +10,10 @@
 class Slide
   
   attr_reader :id
-  attr_accessor :order, :title, :body 
+  attr_accessor :slide_order, :title, :body 
   
   def initialize(options)
-    @order = options["order"]
+    @slide_order = options["slide_order"]
     @title = options["title"]
     @body = options["body"]
     @id = options["id"]
@@ -33,8 +33,8 @@ class Slide
   # Inserts values into 'contents' table in the database as a new 
   # content record.
   def insert    
-    DATABASE.execute("INSERT INTO contents (order, title, body) 
-                      VALUES (#{order}, #{title}, '#{body}')")
+    DATABASE.execute("INSERT INTO contents (slide_order, title, body) 
+                      VALUES (#{@slide_order}, '#{@title}', '#{@body}')")
     @id = DATABASE.last_insert_row_id
   end
   
@@ -54,9 +54,9 @@ class Slide
   #
   # State Changes:
   # Saves new values in 'contents' table in the database.
-  def edit(body_to_update, title_to_update, order_to_update, id_content)
+  def edit(params)
     DATABASE.execute("UPDATE contents SET (body = '#{body_to_update}', 
-    title = '#{title_to_update}', order = '#{order_to_update}') 
+    title = '#{title_to_update}', slide_order = '#{order_to_update}') 
     WHERE id = '#{id_content}'")        
   end
 
@@ -71,9 +71,10 @@ class Slide
   #
   # State Changes:
   # Removes the content record from the database.   
-  def delete(id_to_delete)
-    DATABASE.execute("DELETE FROM contents WHERE id = '#{id_to_delete}'")
-  end  
+  def delete
+    binding.pry
+    DATABASE.execute("DELETE FROM contents WHERE id = #{id}")
+  end
 
   # Public: .find
   # Class method that returns all records in the table
@@ -86,13 +87,9 @@ class Slide
   #
   # State Changes:
   # None.
-  def self.find(term_id)
-     results = DATABASE.execute("SELECT * FROM contents WHERE term_id = #{term_id}")
-     results_as_objects = []
-     results.each do |r|
-       results_as_objects << self.new(r)
-     end
-     results_as_objects
+  def self.find(id)
+     results = DATABASE.execute("SELECT * FROM contents WHERE id = #{id}")[0]
+    self.new(results)
   end
   
   # Public: .all
@@ -113,6 +110,35 @@ class Slide
        results_as_objects << self.new(r)
      end  
      results_as_objects
+  end
+  
+  def save
+    attributes = []
+
+    instance_variables.each do |i|
+      attributes << i.to_s.delete("@")
+    end
+  
+    query_hash = {}
+
+    attributes.each do |a|
+      value = self.send(a)
+      query_hash[a] = value
+    end
+    
+    query_hash.each do |key, value|
+      DATABASE.execute("UPDATE contents SET #{key} = ? WHERE id = #{@id}", value )
+    end
+    self
+  end
+  
+  def to_hash
+    {
+      id: id,
+      slide_order: slide_order,
+      title: title,
+      body: body
+    }
   end
   
 end
