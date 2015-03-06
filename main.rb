@@ -11,3 +11,15 @@ require_relative "slide.rb"
 get "/" do
   erb :homepage
 end
+
+get "/previous-slide" do
+  
+end
+
+get "/next-slide" do
+  
+end
+
+get "/edit-slide" do
+  
+end
